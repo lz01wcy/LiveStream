@@ -8,28 +8,26 @@
 #define _H264_FRAME_TYPE_PARSER_H_
 
 //nal类型
-enum H264_NALU_TYPE
-{
-    H264_NAL_UNKNOWN        = 0,
-    H264_NAL_SLICE          = 1,
-    H264_NAL_SLICE_DPA      = 2,
-    H264_NAL_SLICE_DPB      = 3,
-    H264_NAL_SLICE_DPC      = 4,
-    H264_NAL_SLICE_IDR      = 5,    /* ref_idc != 0 */
-    H264_NAL_SEI            = 6,    /* ref_idc == 0 */
-    H264_NAL_SPS            = 7,
-    H264_NAL_PPS            = 8
+enum H264_NALU_TYPE {
+    H264_NAL_UNKNOWN = 0,
+    H264_NAL_SLICE = 1,
+    H264_NAL_SLICE_DPA = 2,
+    H264_NAL_SLICE_DPB = 3,
+    H264_NAL_SLICE_DPC = 4,
+    H264_NAL_SLICE_IDR = 5,    /* ref_idc != 0 */
+    H264_NAL_SEI = 6,    /* ref_idc == 0 */
+    H264_NAL_SPS = 7,
+    H264_NAL_PPS = 8
     /* ref_idc == 0 for 6,9,10,11,12 */
 };
 
-enum H264_FRAME_TYPE
-{
-    H264_FRAME_NALU         = 0,        ///< 参数集类NALU
-    H264_FRAME_I            = 1,        ///< I帧
-    H264_FRAME_SI           = 2,        ///< I帧
-    H264_FRAME_P            = 3,        ///< P帧
-    H264_FRAME_SP           = 4,        ///< P帧
-    H264_FRAME_B            = 5,        ///< B帧
+enum H264_FRAME_TYPE {
+    H264_FRAME_NALU = 0,        ///< 参数集类NALU
+    H264_FRAME_I = 1,        ///< I帧
+    H264_FRAME_SI = 2,        ///< I帧
+    H264_FRAME_P = 3,        ///< P帧
+    H264_FRAME_SP = 4,        ///< P帧
+    H264_FRAME_B = 5,        ///< B帧
     H264_FRAME_UNKNOWN
 };
 
@@ -43,7 +41,7 @@ enum H264_FRAME_TYPE
 ///
 /// \remark 参数集类NALU会被忽略，输入数据必须具备NALU起始码
 //////////////////////////////////////////////////////////////////////////
-int H264_GetFrameType(const unsigned char* bitstream,
+int H264_GetFrameType(const unsigned char *bitstream,
                       int bitstreamSize,
                       int startCodeSize = 4);
 

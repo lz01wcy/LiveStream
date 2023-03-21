@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include "rtmp_client.h"
+#include "libavcodec/avcodec.h"
 
 //////////////////////////////////////////////////////////////////////////
 /// \brief           从ffmpeg的音频的extradata中解析出adts所需信息
@@ -229,7 +230,7 @@ int ff_rtmp_client::rtmp_pull_open(const char* url)
         av_dump_format(m_ImfCtx, i, m_RtmpUrl, 0);
         
         AVStream* input_stream = m_ImfCtx->streams[i];
-        printf("input_stream->codec->codec_type = [%d] stream[%d]", input_stream->codec->codec_type, i);
+//        printf("input_stream->codec->codec_type = [%d] stream[%d]", input_stream->codec->codec_type, i);
         if (input_stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
         {
             if (input_stream->codec == NULL)
@@ -446,15 +447,15 @@ void ff_rtmp_client::bsf_process(AVPacket& pkt)
     else if (pkt.stream_index == m_AudioStreamIndex)
     {
         memset(&frame, 0, sizeof(FrameInfo));
-        ADTSContext AdtsCtx;
-        memset(&AdtsCtx, 0, sizeof(ADTSContext));
+        ADTSContext *AdtsCtx;
+        memset(AdtsCtx, 0, sizeof(ADTSContext));
 
         frame.data_size  = pkt.size + 7;
         frame.time_stamp = pkt.pts;
         frame.data = new char[frame.data_size];
 
-        aac_decode_extradata(&AdtsCtx, m_AudioCodeCtx->extradata, m_AudioCodeCtx->extradata_size);
-        aac_set_adts_head(&AdtsCtx, frame.data, pkt.size);
+        aac_decode_extradata(AdtsCtx, m_AudioCodeCtx->extradata, m_AudioCodeCtx->extradata_size);
+        aac_set_adts_head(AdtsCtx, frame.data, pkt.size);
        
         memcpy(frame.data + 7, pkt.data, pkt.size);
         push_aduio(frame);

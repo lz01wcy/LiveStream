@@ -8,7 +8,7 @@
 /// @copyright  (c) 1993-2020
 ////////////////////////////////////////////////////////////////////////
 #ifndef FF_RTMP_CLIENT_H_
-#define FF_RTMP_CLIENT_H_ 
+#define FF_RTMP_CLIENT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,31 +30,28 @@ extern "C" {
 using namespace std;
 
 /* aac 的adts头部信息结构体 */
-typedef struct ADTSContext
-{
-      int write_adts;
-      int objecttype;
-      int sample_rate_index;
-      int channel_conf;
-}ADTSContext; 
+typedef struct ADTSContext {
+    int write_adts;
+    int objecttype;
+    int sample_rate_index;
+    int channel_conf;
+} ADTSContext;
 
-typedef struct FrameInfo
-{
-    char* data;
+typedef struct FrameInfo {
+    char *data;
     unsigned int data_size;   /* 数据大小 */
     int64_t time_stamp;   /* 时间戳 */
 
-}FrameInfo;
+} FrameInfo;
 
-class ff_rtmp_client
-{
+class ff_rtmp_client {
 public:
     //////////////////////////////////////////////////////////////////////////
     /// \brief           构造函数
     /// \details         构造函数
     //// \param[in]      url        rtmp地址 
     //////////////////////////////////////////////////////////////////////////
-    ff_rtmp_client(const char* url = NULL);
+    ff_rtmp_client(const char *url = NULL);
 
     ~ff_rtmp_client();
 
@@ -64,9 +61,9 @@ public:
     //// \param[in]      url        rtmp地址 
     /// \return  成功 -- 0，失败 -- 其他数值
     //////////////////////////////////////////////////////////////////////////
-    int rtmp_pull_open(const char* url = NULL);
+    int rtmp_pull_open(const char *url = NULL);
 
-    static void* rtmp_main_loop(void* ptr);
+    static void *rtmp_main_loop(void *ptr);
 
     //////////////////////////////////////////////////////////////////////////
     /// \brief           循环接收rtmp数据处理函数
@@ -93,7 +90,7 @@ public:
     //// \param[in/out]      video      视频数据
     /// \return  
     //////////////////////////////////////////////////////////////////////////
-    void get_video_frame(FrameInfo& video);
+    void get_video_frame(FrameInfo &video);
 
     //////////////////////////////////////////////////////////////////////////
     /// \brief           获取一帧音频频数据
@@ -101,46 +98,47 @@ public:
     //// \param[in/out]      audio      音频数据
     /// \return  
     //////////////////////////////////////////////////////////////////////////
-    void get_audio_frame(FrameInfo& audio);
+    void get_audio_frame(FrameInfo &audio);
 
-    
+
     size_t GetAudioQueueSize();
+
 private:
     //////////////////////////////////////////////////////////////////////////
     /// \brief           音频数据加入队列
     /// \details         音频数据加入队列
     //// \param[in]      audio     音频数据
     //////////////////////////////////////////////////////////////////////////
-    void push_aduio(FrameInfo& audio);
+    void push_aduio(FrameInfo &audio);
 
     //////////////////////////////////////////////////////////////////////////
     /// \brief           视频数据加入队列
     /// \details         视频数据加入队列
     //// \param[in]      video     视频数据
     //////////////////////////////////////////////////////////////////////////
-    void push_video(FrameInfo& video);
-    
+    void push_video(FrameInfo &video);
+
     //////////////////////////////////////////////////////////////////////////
     /// \brief           音频或视频添加头部信息流程
     /// \details         音频或视频添加头部信息流程
     //// \param[in]      pkt              数据包
     /// \return  
     //////////////////////////////////////////////////////////////////////////
-    void bsf_process( AVPacket& pkt);
+    void bsf_process(AVPacket &pkt);
 
     pthread_t m_processing_thread;
 
     bool m_IsProcess;
     char m_RtmpUrl[256];      /* rtmp url地址 */
-    int m_VideoStreamIndex ;  /* 视频流索引 */
+    int m_VideoStreamIndex;  /* 视频流索引 */
     int m_AudioStreamIndex;  /* 音频流索引 */
 
-    mutex  m_AudioMutex;
-    mutex  m_VideoMutex;
+    mutex m_AudioMutex;
+    mutex m_VideoMutex;
 
     queue<FrameInfo> m_AudioQueue;
     queue<FrameInfo> m_VideoQueue;
-    
+
     AVFormatContext *m_ImfCtx;  /* 输入流上下文 */
     AVCodecContext *m_AudioCodeCtx;  /* 音频解码参数上下文 */
 
